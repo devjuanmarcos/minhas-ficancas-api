@@ -1,6 +1,8 @@
+/* eslint-disable */
 import { Router } from "express";
 import {
   criarTransacao,
+  listarGastosFixos,
   listarSubCategoriasPorId,
   listarTransacoes,
   removerTransacao,
@@ -22,6 +24,7 @@ router.get(
   "/subcategorias/:categoria_id",
   asyncHandler(listarSubCategoriasPorId)
 );
+router.get("/transacoes/fixas", asyncHandler(listarGastosFixos));
 router.post("/login", asyncHandler(loginUser));
 
 export default router;

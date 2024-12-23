@@ -2,7 +2,15 @@ import { Request, Response } from "express";
 import { supabase } from "../services/suprabaseClient";
 
 export const criarTransacao = async (req: Request, res: Response) => {
-  const { descricao, tipo, valor, fixo, categoria, mes_ano } = req.body;
+  const {
+    descricao,
+    valor,
+    fixo,
+    categoria,
+    mes_ano,
+    categoria_id,
+    subcategoria_id,
+  } = req.body;
 
   // Obtenha os tokens do cabeçalho da requisição
   const accessToken = req.headers["supabase.token"] as string;
@@ -24,11 +32,12 @@ export const criarTransacao = async (req: Request, res: Response) => {
 
   const { data, error } = await supabase.from("transacoes").insert({
     descricao,
-    tipo,
     valor,
     fixo,
     categoria,
     mes_ano,
+    categoria_id,
+    subcategoria_id,
   });
 
   if (error) return res.status(400).json({ error: error.message });
@@ -107,4 +116,28 @@ export const listarSubCategoriasPorId = async (req: Request, res: Response) => {
   }
 
   return res.status(200).json(data);
+};
+
+export const listarGastosFixos = async (req: Request, res: Response) => {
+  const { sub_categoria_id } = req.query;
+
+  try {
+    let query = supabase.from("transacoes").select("*").eq("fixo", true);
+
+    if (sub_categoria_id) {
+      query = query.eq("subcategoria_id", sub_categoria_id);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      error: error instanceof Error ? error.message : "Erro desconhecido",
+    });
+  }
 };
