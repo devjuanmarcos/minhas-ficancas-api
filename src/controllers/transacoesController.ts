@@ -118,14 +118,18 @@ export const listarSubCategoriasPorId = async (req: Request, res: Response) => {
   return res.status(200).json(data);
 };
 
-export const listarGastosFixos = async (req: Request, res: Response) => {
-  const { sub_categoria_id } = req.query;
+export const listarGastosGanhosFixos = async (req: Request, res: Response) => {
+  const { sub_categoria_id, categoria_id } = req.query;
 
   try {
     let query = supabase.from("transacoes").select("*").eq("fixo", true);
 
     if (sub_categoria_id) {
       query = query.eq("subcategoria_id", sub_categoria_id);
+    }
+
+    if (categoria_id) {
+      query = query.eq("categoria_id", categoria_id);
     }
 
     const { data, error } = await query;
