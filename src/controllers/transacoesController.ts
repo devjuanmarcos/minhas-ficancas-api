@@ -45,7 +45,7 @@ export const criarTransacao = async (req: Request, res: Response) => {
 };
 
 export const listarTransacoes = async (req: Request, res: Response) => {
-  const { mes_ano, last_three_months } = req.query;
+  const { mes_ano, last_three_months, categoria } = req.query;
 
   let filterQuery = supabase.from("transacoes").select("*");
 
@@ -70,6 +70,10 @@ export const listarTransacoes = async (req: Request, res: Response) => {
 
   if (mes_ano) {
     filterQuery = filterQuery.eq("mes_ano", mes_ano);
+  }
+
+  if (categoria) {
+    filterQuery = filterQuery.eq("categoria_id", categoria);
   }
 
   const { data, error } = await filterQuery;
