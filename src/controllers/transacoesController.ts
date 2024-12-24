@@ -45,14 +45,39 @@ export const criarTransacao = async (req: Request, res: Response) => {
 };
 
 export const listarTransacoes = async (req: Request, res: Response) => {
-  const { mes_ano } = req.query;
+  const { mes_ano, last_three_months } = req.query;
 
-  const { data, error } = await supabase
-    .from("transacoes")
-    .select("*")
-    .eq("mes_ano", mes_ano);
+  let filterQuery = supabase.from("transacoes").select("*");
 
-  if (error) return res.status(400).json({ error: error.message });
+  if (last_three_months === "true") {
+    const currentDate = new Date();
+    const months = [];
+
+    for (let i = 0; i < 3; i++) {
+      const date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - i,
+        1
+      );
+      const formattedMonth = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
+      months.push(formattedMonth);
+    }
+
+    filterQuery = filterQuery.in("mes_ano", months);
+  }
+
+  if (mes_ano) {
+    filterQuery = filterQuery.eq("mes_ano", mes_ano);
+  }
+
+  const { data, error } = await filterQuery;
+
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
+
   return res.status(200).json(data);
 };
 
