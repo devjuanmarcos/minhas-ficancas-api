@@ -9,10 +9,6 @@ const port = process.env.PORT || 3000;
 app.use(corsMiddleware);
 app.use(bodyParser.json());
 app.use("/api", router);
-app.use((req, res, next) => {
-  console.log("Headers recebidos:", req.headers);
-  next();
-});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
