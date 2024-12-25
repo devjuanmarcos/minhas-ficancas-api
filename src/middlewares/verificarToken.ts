@@ -16,6 +16,7 @@ export const verifyToken = async (
     }
 
     res.header("supabase.token2", "teste");
+    console.log("Headers enviados:", res.getHeaders());
 
     const { error: sessionError } = await supabase.auth.setSession({
       access_token: accessToken,
