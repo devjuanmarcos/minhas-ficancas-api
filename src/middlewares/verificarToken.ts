@@ -7,11 +7,9 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   try {
-    const accessToken = req.headers["supabase.token"] as string;
-    const refreshToken = req.headers["supabase.refresh_token"] as string;
+    const accessToken = req.headers["supabase_token"] as string;
+    const refreshToken = req.headers["supabase_refresh_token"] as string;
     console.log("Headers recebidos:", req.headers);
-    res.header("supabase.token2", "teste");
-    console.log("Headers enviados:", res.getHeaders());
     if (!accessToken || !refreshToken) {
       res.status(403).json({ error: "Tokens não fornecidos" });
       return;
