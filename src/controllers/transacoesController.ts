@@ -12,6 +12,10 @@ export const criarTransacao = async (req: Request, res: Response) => {
     subcategoria_id,
   } = req.body;
 
+  if (fixo === undefined) {
+    fixo == false;
+  }
+
   const newDate = new Date(data_completa);
 
   // Extraia o ano e o mês
