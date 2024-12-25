@@ -4,6 +4,7 @@ import {
   criarInvestimento,
   criarTransacao,
   investimentos,
+  listarCategoriasInvestimento,
   listarGastosGanhosFixos,
   listarSubCategoriasPorId,
   listarTransacoes,
@@ -45,6 +46,10 @@ router.put(
   "/investimentos/:id",
   verifyToken,
   asyncHandler(atualizarInvestimento)
+);
+router.get(
+  "/investimentos-categorias",
+  asyncHandler(listarCategoriasInvestimento)
 );
 
 export default router;

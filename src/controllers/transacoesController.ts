@@ -208,3 +208,26 @@ export const atualizarInvestimento = async (req: Request, res: Response) => {
   if (error) return res.status(400).json({ error: error.message });
   return res.status(200).json(data);
 };
+
+export const listarCategoriasInvestimento = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("financas_investimento_categorias")
+      .select("*");
+
+    if (error) {
+      console.error("Erro ao buscar categorias:", error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error("Erro inesperado:", err);
+    return res
+      .status(500)
+      .json({ error: "Erro inesperado ao listar categorias." });
+  }
+};

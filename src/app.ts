@@ -10,6 +10,11 @@ app.use(corsMiddleware);
 app.use(bodyParser.json());
 app.use("/api", router);
 
+app.use((req, res, next) => {
+  req.url = req.url.replace(/\/$/, "");
+  next();
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
