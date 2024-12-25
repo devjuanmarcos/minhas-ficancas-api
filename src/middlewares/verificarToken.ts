@@ -9,10 +9,10 @@ export const verifyToken = async (
   try {
     const accessToken = req.headers["supabase.token"] as string;
     const refreshToken = req.headers["supabase.refresh_token"] as string;
-
+    console.log("Headers recebidos:", req.headers);
     if (!accessToken || !refreshToken) {
-      res.status(401).json({ error: "Tokens não fornecidos" });
-      return; // Finaliza o middleware para evitar que `next()` seja chamado
+      res.status(403).json({ error: "Tokens não fornecidos" });
+      return;
     }
 
     const { error: sessionError } = await supabase.auth.setSession({

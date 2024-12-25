@@ -1,5 +1,8 @@
 import app from "./app";
 import dotenv from "dotenv";
+import { corsMiddleware } from "./middlewares/corsMiddleware";
+
+app.use(corsMiddleware);
 
 dotenv.config();
 
