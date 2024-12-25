@@ -221,7 +221,12 @@ export const atualizarInvestimento = async (req: Request, res: Response) => {
     }
 
     const currentQuantidade = currentInvestmentData[0].quantidade;
-    const valorExtrair = Math.max(currentQuantidade - quantidade, 0); // Garante que o valor não será negativo
+    const valorExtrair =
+      currentQuantidade >= quantidade
+        ? currentQuantidade - quantidade
+        : quantidade - currentQuantidade;
+
+    console.log(valorExtrair);
 
     const extrairSaldoData = {
       descricao: "Investimento",
