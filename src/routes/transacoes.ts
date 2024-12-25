@@ -7,7 +7,7 @@ import {
   removerTransacao,
   resumoMensal,
 } from "../controllers/transacoesController";
-import { loginUser } from "../controllers/authController";
+import { loginUser, LoginUserWithToken } from "../controllers/authController";
 
 const router = Router();
 
@@ -25,5 +25,6 @@ router.get(
 );
 router.get("/transacoes/fixos", asyncHandler(listarGastosGanhosFixos));
 router.post("/login", asyncHandler(loginUser));
+router.post("/login-with-id", asyncHandler(LoginUserWithToken));
 
 export default router;

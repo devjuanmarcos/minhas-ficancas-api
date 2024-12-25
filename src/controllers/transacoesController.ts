@@ -7,20 +7,28 @@ export const criarTransacao = async (req: Request, res: Response) => {
     valor,
     fixo,
     categoria,
-    mes_ano,
+    data_completa,
     categoria_id,
     subcategoria_id,
   } = req.body;
 
-  // Obtenha os tokens do cabeçalho da requisição
+  const newDate = new Date(data_completa);
+
+  // Extraia o ano e o mês
+  const mes_ano = `${newDate.getFullYear()}-${String(
+    newDate.getMonth() + 1
+  ).padStart(2, "0")}`;
+
   const accessToken = req.headers["supabase.token"] as string;
   const refreshToken = req.headers["supabase.refresh_token"] as string;
+
+  console.log("Access Token:", accessToken);
+  console.log("Refresh Token:", refreshToken);
 
   if (!accessToken || !refreshToken) {
     return res.status(401).json({ error: "Token não fornecido" });
   }
 
-  // Defina a sessão com os tokens
   const { error: sessionError } = await supabase.auth.setSession({
     access_token: accessToken,
     refresh_token: refreshToken,
@@ -36,6 +44,7 @@ export const criarTransacao = async (req: Request, res: Response) => {
     fixo,
     categoria,
     mes_ano,
+    data_completa,
     categoria_id,
     subcategoria_id,
   });
