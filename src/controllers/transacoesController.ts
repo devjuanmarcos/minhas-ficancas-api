@@ -23,25 +23,6 @@ export const criarTransacao = async (req: Request, res: Response) => {
     newDate.getMonth() + 1
   ).padStart(2, "0")}`;
 
-  const accessToken = req.headers["supabase.token"] as string;
-  const refreshToken = req.headers["supabase.refresh_token"] as string;
-
-  console.log("Access Token:", accessToken);
-  console.log("Refresh Token:", refreshToken);
-
-  if (!accessToken || !refreshToken) {
-    return res.status(401).json({ error: "Token não fornecido" });
-  }
-
-  const { error: sessionError } = await supabase.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken,
-  });
-
-  if (sessionError) {
-    return res.status(401).json({ error: "Não autorizado" });
-  }
-
   const { data, error } = await supabase.from("transacoes").insert({
     descricao,
     valor,

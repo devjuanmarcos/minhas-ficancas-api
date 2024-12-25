@@ -1,30 +1,34 @@
 import { Request, Response, NextFunction } from "express";
 import { supabase } from "../services/suprabaseClient";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 
-export const verificarToken = async (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "Token não fornecido" });
-  }
-
   try {
-    const { data, error } = await supabase.auth.getUser(token);
+    const accessToken = req.headers["supabase.token"] as string;
+    const refreshToken = req.headers["supabase.refresh_token"] as string;
 
-    if (error || !data?.user) {
-      return res.status(401).json({ error: "Token inválido ou expirado" });
+    if (!accessToken || !refreshToken) {
+      res.status(401).json({ error: "Tokens não fornecidos" });
+      return; // Finaliza o middleware para evitar que `next()` seja chamado
     }
 
-    // Anexando o usuário com o tipo correto à requisição
-    req.user = data.user as SupabaseUser;
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
 
+    if (sessionError) {
+      res.status(401).json({ error: "Não autorizado" });
+      return; // Finaliza o middleware
+    }
+
+    // Tudo certo, continue para a próxima função
     next();
-  } catch (err) {
-    return res.status(500).json({ error: "Erro ao verificar o token" });
+  } catch (error) {
+    console.error("Erro no middleware de verificação de token:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
   }
 };
