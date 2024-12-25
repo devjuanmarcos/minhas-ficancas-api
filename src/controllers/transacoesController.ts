@@ -25,10 +25,6 @@ export const criarTransacao = async (req: Request, res: Response) => {
   console.log("Access Token:", accessToken);
   console.log("Refresh Token:", refreshToken);
 
-  if (!accessToken || !refreshToken) {
-    return res.status(401).json({ error: "Token não fornecido" });
-  }
-
   const { error: sessionError } = await supabase.auth.setSession({
     access_token: accessToken,
     refresh_token: refreshToken,
