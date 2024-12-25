@@ -205,11 +205,27 @@ export const atualizarInvestimento = async (req: Request, res: Response) => {
     const mes_ano = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
       2,
       "0"
-    )}`; // Formato YYYY-MM
+    )}`;
+
+    const { data: currentInvestmentData, error: fetchError } = await supabase
+      .from("financas_investimento")
+      .select("quantidade")
+      .eq("id", id);
+
+    if (fetchError) {
+      return res.status(400).json({ error: fetchError.message });
+    }
+
+    if (!currentInvestmentData || currentInvestmentData.length === 0) {
+      return res.status(404).json({ error: "Investimento não encontrado." });
+    }
+
+    const currentQuantidade = currentInvestmentData[0].quantidade;
+    const valorExtrair = Math.max(currentQuantidade - quantidade, 0); // Garante que o valor não será negativo
 
     const extrairSaldoData = {
-      descricao: "Saque de investimento",
-      valor: quantidade,
+      descricao: "Investimento",
+      valor: valorExtrair,
       fixo: false,
       mes_ano: mes_ano,
       data_completa: newData,
