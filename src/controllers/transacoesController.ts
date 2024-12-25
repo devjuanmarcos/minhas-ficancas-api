@@ -151,14 +151,18 @@ export const listarGastosGanhosFixos = async (req: Request, res: Response) => {
 };
 
 export const investimentos = async (req: Request, res: Response) => {
-  // const { mes_ano } = req.query;
+  const { id } = req.params;
 
-  const { data, error } = await supabase
-    .from("financas_investimento")
-    .select("*");
-  // .eq("mes_ano", mes_ano);
+  const query = supabase.from("financas_investimento");
 
-  if (error) return res.status(400).json({ error: error.message });
+  const { data, error } = id
+    ? await query.select("*").eq("id", id)
+    : await query.select("*");
+
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
+
   return res.status(200).json(data);
 };
 

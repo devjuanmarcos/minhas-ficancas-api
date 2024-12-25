@@ -34,6 +34,7 @@ router.get(
 );
 
 router.get("/investimentos", asyncHandler(investimentos));
+router.get("/investimentos/:id", asyncHandler(investimentos));
 router.post("/investimentos", verifyToken, asyncHandler(criarInvestimento));
 router.delete(
   "/investimentos/:id",
