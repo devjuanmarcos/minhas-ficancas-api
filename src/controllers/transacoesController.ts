@@ -192,12 +192,38 @@ export const removerInvestimento = async (req: Request, res: Response) => {
 
 export const atualizarInvestimento = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { quantidade, categoria_id } = req.body;
+  const { quantidade, categoria_id, extrair_saldo } = req.body;
 
   const finalData = {
     quantidade: quantidade,
     categoria_id: categoria_id,
   };
+
+  if (extrair_saldo) {
+    const now = new Date();
+    const newData = now.toISOString().split("T")[0];
+    const mes_ano = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}`; // Formato YYYY-MM
+
+    const extrairSaldoData = {
+      descricao: "Saque de investimento",
+      valor: quantidade,
+      fixo: false,
+      mes_ano: mes_ano,
+      data_completa: newData,
+      categoria_id: 3,
+      subcategoria_id: 25,
+    };
+
+    const { error: insertError } = await supabase
+      .from("transacoes")
+      .insert(extrairSaldoData);
+    if (insertError) {
+      return res.status(400).json({ error: insertError.message });
+    }
+  }
 
   const { data, error } = await supabase
     .from("financas_investimento")
